@@ -20,6 +20,20 @@ Keyboard: `Space` spin or stop, `T` turbo, `A` autoplay, arrow keys change the b
 
 The math is tuned by simulation to about 97% return with a win on roughly 37% of spins, free spins about every 115 spins, and a 10x+ win about every 70 spins.
 
+## Nova Roulette
+
+**Play:** https://morronel.github.io/slot_1/roulette/
+
+- European single-zero wheel drawn on canvas: gold rim with chasing bulbs, deflector diamonds, a rotor that never stops drifting.
+- The ball is flicked onto the track, slows, bounces off deflectors, rattles across the frets with a click per pocket and settles into a pocket drawn in advance by `crypto.getRandomValues`.
+- On phones the wheel zooms up to fill the screen while the ball rolls, then shrinks back so you can watch the payout.
+- Chips fly from the rack to the table and stack up. Losing chips get swept to the wheel; winners pulse, get a payout stack beside them, fountain coins and fly into your balance. 8x, 18x and 30x the stake bring Big, Mega and Epic Win screens.
+- Straight up (35:1), dozens and columns (2:1), red/black, odd/even, 1–18/19–36 (1:1). Undo, clear, double, rebet, turbo, and a history of the last 14 numbers.
+- Table switches between a classic horizontal layout and a vertical one for phones in portrait.
+- Keyboard: `Space` spin (or rebet and spin), `Z` undo, `C` clear, `D` double, `R` rebet, `T` turbo, `1`–`6` pick a chip.
+
+All games share one play-money balance (localStorage key `starfall-spins.v1`). The grid button in each game's header opens a lobby to switch games (`js/nav.js`).
+
 ## Run locally
 
 It uses ES modules, so serve the folder rather than opening the file directly:
@@ -45,3 +59,5 @@ python3 -m http.server 8000
 - `js/audio.js` Web Audio sound synthesis
 - `js/fx.js` starfield and particles
 - `js/main.js` reels animation, game flow, UI
+- `js/nav.js` shared game switcher and lobby (include it on any game page)
+- `roulette/` Nova Roulette: `rules.js` (bets and payouts, runs in Node), `wheel.js` (canvas wheel and ball physics), `sfx.js` (extra sounds), `main.js` (table and game flow)
