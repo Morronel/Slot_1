@@ -67,9 +67,17 @@ python3 -m http.server 8000
 ## Turn on GitHub Pages
 
 1. On GitHub, open the repository's **Settings → Pages**.
-2. Under **Build and deployment**, set **Source** to **Deploy from a branch**.
-3. Pick the `main` branch and the `/ (root)` folder, then **Save**.
-4. After a minute the game is live at `https://morronel.github.io/slot_1/`.
+2. Under **Build and deployment**, set **Source** to **GitHub Actions**.
+3. Every push to `main` runs `.github/workflows/pages.yml`, which builds the site and deploys it to `https://morronel.github.io/slot_1/`.
+
+## Cache busting
+
+After a deploy, browsers could keep some old JS/CSS cached and load some new files, and the mix broke the games. GitHub Pages does not allow custom cache headers, so the deploy runs `scripts/build.mjs` to build `_site/`:
+
+- Every local JS/CSS URL (HTML tags, ES module imports, CSS `@import`/`url()`) gets `?v=<hash>`. The hash covers the file and everything it imports, so a change anywhere in the import chain gives a new URL, and unchanged files stay cached.
+- Each page gets a tiny check that fetches `version.json` uncached. If the live deploy is newer than the HTML the browser cached, the page reloads once on a fresh URL.
+
+Source files are never modified, so running locally needs no build. To check the deploy output: `node scripts/build.mjs` and serve `_site/`.
 
 ## Files
 
@@ -81,5 +89,6 @@ python3 -m http.server 8000
 - `js/audio.js` Web Audio sound synthesis
 - `js/fx.js` starfield and particles
 - `js/main.js` reels animation, game flow, UI
+- `scripts/build.mjs` deploy build that cache-busts asset URLs
 - `js/nav.js` shared game switcher and lobby (include it on any game page)
 - `roulette/` Nova Roulette: `rules.js` (bets and payouts, runs in Node), `wheel.js` (canvas wheel and ball physics), `sfx.js` (extra sounds), `main.js` (table and game flow)
