@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#0b0420">
+  <title>Nova Roulette</title>
+  <meta name="description" content="A free play-money roulette wheel that runs entirely in your browser.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='44' fill='%23ffd84a'/%3E%3Ccircle cx='50' cy='50' r='34' fill='%23b5103f'/%3E%3Ccircle cx='50' cy='50' r='14' fill='%23ffd84a'/%3E%3Ccircle cx='72' cy='28' r='8' fill='%23fff'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="roulette.css">
+</head>
+<body>
+  <canvas id="stars" aria-hidden="true"></canvas>
+  <div class="nebula" aria-hidden="true"></div>
+
+  <main id="app">
+    <header class="top">
+      <h1 class="logo" aria-label="Nova Roulette"><span>NOVA</span><em>ROULETTE</em></h1>
+      <div class="top-buttons">
+        <span data-games-nav></span>
+        <button id="btn-turbo" class="icon-btn" aria-pressed="false" aria-label="Turbo" title="Turbo (T)">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path d="M13 2 4 14h7l-1 8 9-12h-7z" fill="currentColor"/></svg>
+        </button>
+        <button id="btn-info" class="icon-btn" aria-label="How to play">i</button>
+        <button id="btn-sound" class="icon-btn" aria-label="Toggle sound" aria-pressed="true">
+          <svg viewBox="0 0 24 24" width="20" height="20"><path class="spk" d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path class="waves" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="mute" d="M16 9l6 6M22 9l-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <section class="stage">
+      <div class="wheel-dock" id="wheel-dock">
+        <div class="wheel-wrap" id="wheel-wrap">
+          <canvas id="wheel" aria-label="Roulette wheel" role="img"></canvas>
+        </div>
+      </div>
+      <div class="side">
+        <div class="meters">
+          <div class="meter"><label>Balance</label><output id="balance">0</output></div>
+          <div class="meter"><label>Bet</label><output id="staked">0</output></div>
+          <div class="meter"><label>Win</label><output id="win">0</output></div>
+        </div>
+        <div class="history-box">
+          <label>Last numbers</label>
+          <ol class="history" id="history" aria-live="polite"></ol>
+        </div>
+        <div class="msgbar" aria-live="polite"><span id="msg">Place your chips</span></div>
+      </div>
+    </section>
+
+    <section class="table-area" id="table-area">
+      <div class="felt" id="felt" role="group" aria-label="Betting table"></div>
+    </section>
+
+    <section class="controls">
+      <div class="chips" id="chips" role="radiogroup" aria-label="Chip value"></div>
+      <div class="action-row">
+        <button id="btn-undo" class="pill-btn" title="Undo (Z)">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path d="M9 14 4 9l5-5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 9h10a6 6 0 0 1 0 12h-3" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg><span>Undo</span>
+        </button>
+        <button id="btn-clear" class="pill-btn" title="Clear (C)">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg><span>Clear</span>
+        </button>
+        <button id="btn-spin" class="spin-btn" aria-label="Spin (Space)">
+          <span class="spin-ring"></span>
+          <svg class="spin-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2.6"/><circle cx="12" cy="12" r="2.6" fill="currentColor"/><circle cx="12" cy="4.6" r="2" fill="currentColor"/></svg>
+          <span class="spin-label">SPIN</span>
+        </button>
+        <button id="btn-double" class="pill-btn" title="Double (D)">
+          <span class="x2">×2</span><span>Double</span>
+        </button>
+        <button id="btn-rebet" class="pill-btn" title="Rebet (R)">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 4a8 8 0 1 0 7.4 5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M20.5 3.5v6h-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Rebet</span>
+        </button>
+      </div>
+    </section>
+
+    <p class="fineprint">Play money only, one balance across every game. <span class="keys">Space spin · Z undo · C clear · D double · R rebet · 1–6 chips</span></p>
+  </main>
+
+  <div class="wheel-backdrop" id="wheel-backdrop" aria-hidden="true"></div>
+  <canvas id="fx" aria-hidden="true"></canvas>
+  <div class="flyers" id="flyers" aria-hidden="true"></div>
+
+  <div class="overlay bigwin" id="bigwin" hidden>
+    <div class="burst" aria-hidden="true"></div>
+    <div class="bigwin-title" id="bigwin-title">BIG WIN</div>
+    <div class="bigwin-num" id="bigwin-num"></div>
+    <div class="bigwin-amount" id="bigwin-amount">0</div>
+    <div class="bigwin-hint">tap to collect</div>
+  </div>
+
+  <div class="overlay broke" id="broke" hidden>
+    <div class="card">
+      <h2>Out of stardust</h2>
+      <p>Your balance is too low for a chip. Here's a fresh stack on the house. It's all play money anyway.</p>
+      <button id="btn-refill" class="cta">Refill 10,000</button>
+    </div>
+  </div>
+
+  <dialog id="help">
+    <form method="dialog" class="card">
+      <h2>How to play</h2>
+      <p class="pt-note">Pick a chip, tap the table to place it, then spin. Tap a spot again to stack more. The ball lands on one of 37 numbers, 0 to 36.</p>
+      <table class="pays">
+        <thead><tr><th>Bet</th><th>Covers</th><th>Pays</th></tr></thead>
+        <tbody>
+          <tr><td>Straight up</td><td>One number</td><td><b>35 to 1</b></td></tr>
+          <tr><td>Dozen</td><td>1–12, 13–24 or 25–36</td><td><b>2 to 1</b></td></tr>
+          <tr><td>Column</td><td>12 numbers in a row of the table</td><td><b>2 to 1</b></td></tr>
+          <tr><td>Red or Black</td><td>18 numbers</td><td><b>1 to 1</b></td></tr>
+          <tr><td>Odd or Even</td><td>18 numbers</td><td><b>1 to 1</b></td></tr>
+          <tr><td>1–18 or 19–36</td><td>18 numbers</td><td><b>1 to 1</b></td></tr>
+        </tbody>
+      </table>
+      <p class="pt-note">Zero is green and loses every outside bet. Your stake comes back on top of the payout. Hover an outside bet to see the numbers it covers.</p>
+      <p class="pt-note">Single zero: every bet returns about 97.3% over the long run. Turbo (the lightning button) makes the ball roll faster. Every spin is drawn with your browser's secure random generator before the ball leaves the hand, and each spin is independent.</p>
+      <button class="cta" value="close">Close</button>
+    </form>
+  </dialog>
+
+  <script src="../js/nav.js" defer></script>
+  <script type="module" src="main.js"></script>
+</body>
+</html>
