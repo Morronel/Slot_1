@@ -2,123 +2,37 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0b0420">
-  <title>Starfall Spins</title>
-  <meta name="description" content="A free play-money slot machine that runs entirely in your browser.">
+  <title>Starfall Casino</title>
+  <meta name="description" content="Free play-money slots, roulette and blackjack that run entirely in your browser.">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%AD%90%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/lobby.css">
 </head>
-<body>
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-    <filter id="vblur" x="0" y="-20%" width="100%" height="140%"><feGaussianBlur stdDeviation="0 7"/></filter>
-  </svg>
+<body class="lobby-page">
   <canvas id="stars" aria-hidden="true"></canvas>
   <div class="nebula" aria-hidden="true"></div>
 
-  <main id="app">
-    <header class="top">
-      <h1 class="logo" aria-label="Starfall Spins"><span>STARFALL</span><em>SPINS</em></h1>
-      <div class="top-buttons">
-        <span data-games-nav></span>
-        <button id="btn-info" class="icon-btn" aria-label="Paytable">i</button>
-        <button id="btn-sound" class="icon-btn" aria-label="Toggle sound" aria-pressed="true">
-          <svg viewBox="0 0 24 24" width="20" height="20"><path class="spk" d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path class="waves" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="mute" d="M16 9l6 6M22 9l-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        </button>
+  <main class="lobby" data-games-lobby>
+    <header class="lobby-head">
+      <h1 class="logo lobby-logo" aria-label="Starfall Casino"><span>STARFALL</span><em>CASINO</em></h1>
+      <p class="lobby-sub">Pick a game. One play-money balance follows you to every table.</p>
+      <div class="lobby-bal" aria-live="polite">
+        <span class="lobby-bal-label">Balance</span>
+        <output id="lobby-balance">10,000</output>
       </div>
     </header>
 
-    <section class="machine" id="machine">
-      <div class="bulbs" id="bulbs" aria-hidden="true"></div>
-      <div class="fs-banner" id="fs-banner" hidden>
-        <span>FREE SPINS</span> <b id="fs-count">0</b> <span class="fs-x">ALL WINS ×2</span>
-      </div>
-      <div class="reels-frame">
-        <div class="reels" id="reels"></div>
-        <canvas id="lines" aria-hidden="true"></canvas>
-      </div>
-      <div class="winbar" id="winbar" aria-live="polite">
-        <span class="winbar-msg" id="win-msg">Good luck!</span>
-      </div>
-    </section>
+    <nav class="lobby-grid" id="lobby-grid" aria-label="Games"></nav>
 
-    <section class="controls">
-      <div class="meter">
-        <label>Balance</label>
-        <output id="balance">0</output>
-      </div>
-      <div class="meter bet">
-        <label>Bet</label>
-        <div class="bet-row">
-          <button id="bet-down" class="round-btn" aria-label="Lower bet">−</button>
-          <output id="bet">0</output>
-          <button id="bet-up" class="round-btn" aria-label="Raise bet">+</button>
-        </div>
-      </div>
-      <div class="meter">
-        <label>Win</label>
-        <output id="win">0</output>
-      </div>
-
-      <div class="action-row">
-        <button id="btn-turbo" class="pill-btn" aria-pressed="false" title="Turbo (T)">
-          <svg viewBox="0 0 24 24" width="18" height="18"><path d="M13 2 4 14h7l-1 8 9-12h-7z" fill="currentColor"/></svg><span>Turbo</span>
-        </button>
-        <button id="btn-spin" class="spin-btn" aria-label="Spin (Space)">
-          <span class="spin-ring"></span>
-          <svg class="spin-icon" viewBox="0 0 24 24"><path d="M12 4a8 8 0 1 0 7.4 5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M20.5 3.5v6h-6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span class="spin-label">SPIN</span>
-        </button>
-        <button id="btn-auto" class="pill-btn" aria-pressed="false" title="Autoplay (A)">
-          <svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 5v14l11-7z" fill="currentColor"/><path d="M3 5v14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg><span>Auto</span>
-        </button>
-      </div>
-    </section>
-
-    <p class="fineprint">Play money only. No real money, no purchases, nothing to win but bragging rights. <span class="keys">Space to spin · T turbo · A auto</span></p>
+    <p class="fineprint">Play money only. No real money, no purchases, nothing to win but bragging rights.</p>
   </main>
 
-  <canvas id="fx" aria-hidden="true"></canvas>
-
-  <div class="overlay bigwin" id="bigwin" hidden>
-    <div class="burst" aria-hidden="true"></div>
-    <div class="bigwin-title" id="bigwin-title">BIG WIN</div>
-    <div class="bigwin-amount" id="bigwin-amount">0</div>
-    <div class="bigwin-hint">tap to collect</div>
-  </div>
-
-  <div class="overlay bonus" id="bonus" hidden>
-    <div class="burst" aria-hidden="true"></div>
-    <div class="bonus-title" id="bonus-title">FREE SPINS</div>
-    <div class="bonus-sub" id="bonus-sub"></div>
-    <div class="bigwin-hint">tap to continue</div>
-  </div>
-
-  <div class="overlay broke" id="broke" hidden>
-    <div class="card">
-      <h2>Out of stardust</h2>
-      <p>Your balance is too low for any bet. Here's a fresh stack on the house. It's all play money anyway.</p>
-      <button id="btn-refill" class="cta">Refill 10,000</button>
-    </div>
-  </div>
-
-  <dialog id="paytable">
-    <form method="dialog" class="card">
-      <h2>Paytable</h2>
-      <p class="pt-note">Wins pay left to right on 20 lines, shown for your current bet. <b>Wild Sun</b> stands in for every symbol except Bonus and appears on reels 2 to 5.</p>
-      <div class="pt-grid" id="pt-grid"></div>
-      <div class="pt-bonus" id="pt-bonus"></div>
-      <h3>Paylines</h3>
-      <div class="pt-lines" id="pt-lines"></div>
-      <p class="pt-note">Theoretical return about 97% over the long run. It is a random game: each spin is independent.</p>
-      <button class="cta" value="close">Close</button>
-    </form>
-  </dialog>
-
   <script src="js/nav.js" defer></script>
-  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/lobby.js"></script>
 </body>
 </html>

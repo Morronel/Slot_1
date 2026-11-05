@@ -1,0 +1,171 @@
+/* Home page game picker. Builds on css/style.css for the theme. */
+
+body.lobby-page {
+  overflow-x: hidden; overflow-y: auto;
+  user-select: auto; -webkit-user-select: auto;
+}
+html:has(body.lobby-page) { height: auto; min-height: 100%; }
+body.lobby-page { height: auto; min-height: 100%; }
+
+.lobby {
+  position: relative; z-index: 1;
+  min-height: 100vh; min-height: 100dvh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: clamp(18px, 4vh, 34px);
+  padding: max(24px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom));
+}
+
+/* ---------- header ---------- */
+.lobby-head { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
+.lobby-logo { font-size: clamp(34px, 8vw, 64px); justify-content: center; flex-wrap: wrap; animation: rise .6s cubic-bezier(.2, 1.4, .4, 1) both; }
+.lobby-sub { margin: 0; color: var(--muted); font-size: clamp(14px, 2.2vw, 17px); max-width: 30em; animation: rise .6s .08s cubic-bezier(.2, 1.4, .4, 1) both; }
+.lobby-bal {
+  display: inline-flex; align-items: center; gap: 12px; margin-top: 4px;
+  padding: 8px 18px 8px 14px; border-radius: 999px;
+  background: var(--panel); border: 1px solid rgba(255, 216, 74, 0.45);
+  box-shadow: 0 0 22px rgba(255, 216, 74, 0.18), inset 0 0 12px rgba(255, 216, 74, 0.08);
+  animation: rise .6s .16s cubic-bezier(.2, 1.4, .4, 1) both;
+}
+.lobby-bal::before {
+  content: ''; width: 22px; height: 22px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff6c2, var(--gold) 45%, var(--gold-deep));
+  box-shadow: 0 0 10px rgba(255, 216, 74, 0.7);
+}
+.lobby-bal-label { font-size: 11px; letter-spacing: 1.6px; text-transform: uppercase; color: var(--muted); }
+.lobby-bal output { font-family: var(--display); font-size: 22px; color: #fff; min-width: 4ch; }
+
+@keyframes rise { from { opacity: 0; transform: translateY(18px); } }
+
+/* ---------- game cards ---------- */
+.lobby-grid {
+  width: 100%; max-width: 1040px;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(14px, 2.4vw, 24px);
+}
+
+.game-card {
+  --accent: var(--pink);
+  position: relative; isolation: isolate;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  padding: 26px 20px 22px; border-radius: 26px;
+  text-decoration: none; color: var(--text); text-align: center;
+  background: linear-gradient(180deg, rgba(52, 18, 120, 0.85), rgba(20, 6, 56, 0.9));
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--lift, 0px));
+  transition: transform .25s cubic-bezier(.2, 1.2, .4, 1), border-color .25s, box-shadow .25s;
+  animation: deal .7s cubic-bezier(.2, 1.3, .4, 1) both;
+  animation-delay: calc(.25s + var(--i, 0) * .1s);
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+.game-card[data-game=slots] { --accent: #ffd84a; }
+.game-card[data-game=roulette] { --accent: #ff4d7a; }
+.game-card[data-game=blackjack] { --accent: #5ff6ff; }
+
+/* Soft spotlight that follows the pointer. */
+.game-card::before {
+  content: ''; position: absolute; inset: 0; z-index: -1; opacity: 0; transition: opacity .25s;
+  background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 30%), color-mix(in srgb, var(--accent) 32%, transparent), transparent 70%);
+}
+/* Shine sweep on hover. */
+.game-card::after {
+  content: ''; position: absolute; top: 0; bottom: 0; left: -60%; width: 40%; z-index: 2; pointer-events: none;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+  transform: skewX(-18deg); transition: left 0s;
+}
+.game-card:hover, .game-card:focus-visible {
+  --lift: -6px;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent), 0 0 36px color-mix(in srgb, var(--accent) 45%, transparent), 0 24px 60px rgba(0, 0, 0, 0.55);
+  outline: none;
+}
+.game-card:hover::before, .game-card:focus-visible::before { opacity: 1; }
+.game-card:hover::after, .game-card:focus-visible::after { left: 130%; transition: left .7s ease-out; }
+.game-card:active { --lift: -2px; transition-duration: .08s; }
+
+@keyframes deal { from { opacity: 0; transform: perspective(900px) translateY(40px) rotateX(18deg) scale(.94); } }
+
+.game-art {
+  width: clamp(96px, 13vw, 132px); aspect-ratio: 1; display: grid; place-items: center;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 22%, transparent), transparent 68%);
+}
+.game-art svg {
+  width: 82%; height: 82%;
+  filter: drop-shadow(0 0 14px color-mix(in srgb, var(--accent) 55%, transparent)) drop-shadow(0 6px 10px rgba(0, 0, 0, 0.5));
+  animation: bob 4s ease-in-out infinite; animation-delay: calc(var(--i, 0) * -1.3s);
+  transition: transform .35s cubic-bezier(.2, 1.6, .4, 1);
+}
+.game-card:hover .game-art svg { transform: scale(1.1) rotate(-4deg); }
+.game-card[data-game=roulette]:hover .game-art svg { transform: scale(1.1) rotate(160deg); transition-duration: .9s; }
+@keyframes bob { 50% { translate: 0 -6px; } }
+
+.game-kind { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+.game-name { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(20px, 2.4vw, 26px); letter-spacing: .5px; line-height: 1.05; }
+.game-blurb { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.4; max-width: 24em; }
+.game-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; padding: 0; margin: 2px 0 6px; list-style: none; }
+.game-tags li { font-size: 11.5px; padding: 3px 9px; border-radius: 999px; background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.12); color: #e3d6ff; }
+
+.game-play {
+  margin-top: auto;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 11px 26px; border-radius: 999px;
+  font-family: var(--display); font-size: 16px; letter-spacing: 1px; color: #2a0a00;
+  background: linear-gradient(180deg, #fff3a6, var(--gold) 45%, #ff9d1f);
+  box-shadow: 0 4px 0 #9a4a00, 0 0 18px rgba(255, 190, 60, 0.45);
+  transition: transform .15s, box-shadow .15s;
+}
+.game-play svg { width: 14px; height: 14px; }
+.game-card:hover .game-play { transform: translateY(-1px); box-shadow: 0 5px 0 #9a4a00, 0 0 26px rgba(255, 190, 60, 0.7); }
+.game-card:active .game-play { transform: translateY(3px); box-shadow: 0 1px 0 #9a4a00, 0 0 18px rgba(255, 190, 60, 0.45); }
+
+.game-last {
+  position: absolute; top: 14px; right: 14px; z-index: 3;
+  font-size: 10.5px; letter-spacing: 1.2px; text-transform: uppercase; font-weight: 600;
+  padding: 4px 9px; border-radius: 999px; color: #fff;
+  background: color-mix(in srgb, var(--accent) 30%, rgba(20, 6, 56, 0.9));
+  border: 1px solid var(--accent);
+}
+
+.lobby .fineprint { max-width: 36em; }
+
+/* ---------- phones ---------- */
+@media (max-width: 820px) {
+  .lobby { justify-content: flex-start; }
+  .lobby-grid { grid-template-columns: minmax(0, 1fr); max-width: 480px; }
+  .game-card {
+    display: grid; grid-template-columns: auto 1fr; grid-template-areas: 'art kind' 'art name' 'art blurb' 'art tags' 'play play';
+    align-items: center; justify-items: start; text-align: left; column-gap: 16px; row-gap: 4px;
+    padding: 18px 18px 16px;
+  }
+  .game-art { grid-area: art; width: 92px; align-self: center; }
+  .game-kind { grid-area: kind; }
+  .game-name { grid-area: name; }
+  .game-blurb { grid-area: blurb; font-size: 13.5px; }
+  .game-tags { grid-area: tags; justify-content: flex-start; margin: 4px 0 0; }
+  .game-play { grid-area: play; justify-self: stretch; justify-content: center; margin-top: 14px; }
+  .game-last { top: 12px; right: 12px; }
+}
+@media (max-width: 380px) {
+  .game-art { width: 72px; }
+  .game-tags li:nth-child(3) { display: none; }
+}
+/* Phones on their side: three compact cards in a row. */
+@media (max-height: 540px) and (orientation: landscape) {
+  .lobby { justify-content: flex-start; gap: 14px; }
+  .lobby-head { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 6px 18px; }
+  .lobby-logo { font-size: 30px; flex-direction: row; }
+  .lobby-sub { display: none; }
+  .lobby-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: none; }
+  .game-card { display: flex; padding: 14px 12px; gap: 6px; text-align: center; align-items: center; }
+  .game-art { width: 70px; }
+  .game-blurb, .game-tags { display: none; }
+  .game-play { margin-top: 6px; padding: 8px 18px; font-size: 14px; }
+  .lobby .fineprint { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game-card, .lobby-logo, .lobby-sub, .lobby-bal { animation: none; }
+  .game-art svg { animation: none; }
+  .game-card { transform: none; }
+}
