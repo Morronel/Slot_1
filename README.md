@@ -20,6 +20,22 @@ Keyboard: `Space` spin or stop, `T` turbo, `A` autoplay, arrow keys change the b
 
 The math is tuned by simulation to about 97% return with a win on roughly 37% of spins, free spins about every 115 spins, and a 10x+ win about every 70 spins.
 
+## Starfall 21 (blackjack)
+
+**Play:** https://morronel.github.io/slot_1/blackjack/
+
+A blackjack table in the same cosmic style, sharing the slot's play-money balance.
+
+- Six-deck shoe with a cut card, dealer stands on all 17s, blackjack pays 3 to 2, double on any two cards, split up to four hands (doubling after a split is allowed). About 99.4% return with perfect play, checked by simulation.
+- Tap chips to stack your bet, Rebet repeats the last one and then doubles it. Deal with an empty spot rebets automatically.
+- Cards fly out of the shoe and flip in mid-air, the dealer peeks under an ace or ten, totals pop as they change, and every hand gets a WIN, BUST, PUSH or BLACKJACK stamp.
+- Payouts fly from the dealer onto your stack and then into your balance with coin fountains. Blackjacks, clean sweeps on split hands and huge wins get a banner, confetti and a fanfare. A streak badge counts wins in a row.
+- Card, chip, shuffle and bust sounds are synthesized with the Web Audio API, reusing the slot's sound engine.
+- Works on desktop, phones in portrait and phones on their side.
+
+Keyboard: `Space` deal, `H` hit, `S` stand, `D` double, `P` split, `1` to `5` add chips, `R` rebet, `Backspace` clears the bet.
+
+Files live in `blackjack/`: `engine.js` (shoe, rules, payouts, pure logic), `sfx.js` (table sounds), `main.js` (animation and game flow), `bj.css`, `index.html`.
 ## Nova Roulette
 
 **Play:** https://morronel.github.io/slot_1/roulette/

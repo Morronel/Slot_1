@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#0b0420">
+  <title>Starfall 21</title>
+  <meta name="description" content="Free play-money blackjack that runs entirely in your browser.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%99%A0%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="bj.css">
+  <script src="../js/nav.js" defer></script>
+</head>
+<body class="bj">
+  <canvas id="stars" aria-hidden="true"></canvas>
+  <div class="nebula" aria-hidden="true"></div>
+
+  <main id="bj-app">
+    <header class="top bj-top">
+      <h1 class="logo" aria-label="Starfall 21"><span>STARFALL</span><em>21</em></h1>
+      <div class="top-buttons">
+        <span data-games-nav></span>
+        <button id="btn-info" class="icon-btn" aria-label="Rules">i</button>
+        <button id="btn-sound" class="icon-btn" aria-label="Toggle sound" aria-pressed="true">
+          <svg viewBox="0 0 24 24" width="20" height="20"><path class="spk" d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path class="waves" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="mute" d="M16 9l6 6M22 9l-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <section class="table" id="table">
+      <div class="shoe" id="shoe" aria-hidden="true">
+        <div class="shoe-cards"></div>
+        <div class="shoe-mouth"></div>
+      </div>
+      <div class="discard" id="discard" aria-hidden="true"></div>
+
+      <div class="zone dealer-zone">
+        <div class="hand dealer" id="dealer">
+          <div class="cards"></div>
+          <div class="total" hidden></div>
+          <div class="stamp" hidden></div>
+        </div>
+      </div>
+
+      <div class="felt-text" aria-hidden="true">
+        <svg viewBox="0 0 600 70" preserveAspectRatio="xMidYMid meet">
+          <path id="arc" d="M10 10 Q300 90 590 10" fill="none"/>
+          <text><textPath href="#arc" startOffset="50%" text-anchor="middle">BLACKJACK PAYS 3 TO 2 ✦ DEALER STANDS ON ALL 17S</textPath></text>
+        </svg>
+      </div>
+
+      <div class="zone player-zone" id="hands"></div>
+
+      <div class="msgbar" id="msgbar" aria-live="polite">
+        <span class="msg" id="msg">Place your bet</span>
+        <span class="streak" id="streak" hidden></span>
+      </div>
+    </section>
+
+    <section class="bj-controls">
+      <div class="meters">
+        <div class="meter"><label>Balance</label><output id="balance">0</output></div>
+        <div class="meter"><label>Bet</label><output id="bet">0</output></div>
+        <div class="meter"><label>Win</label><output id="win">0</output></div>
+      </div>
+
+      <div class="panel" id="bet-panel">
+        <div class="rack" id="rack"></div>
+        <div class="bet-actions">
+          <button class="pill-btn" id="btn-clear" title="Clear bet (Backspace)"><span>Clear</span></button>
+          <button class="spin-btn deal-btn" id="btn-deal" aria-label="Deal (Space)">
+            <span class="spin-ring"></span>
+            <svg class="spin-icon" viewBox="0 0 24 24"><rect x="5" y="3" width="11" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M9 21h9a2 2 0 0 0 2-2V7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+            <span class="spin-label">DEAL</span>
+          </button>
+          <button class="pill-btn" id="btn-rebet" title="Rebet, press again to double"><span>Rebet</span></button>
+        </div>
+      </div>
+
+      <div class="panel" id="play-panel" hidden>
+        <button class="act hit" id="btn-hit" title="Hit (H)"><i>+</i><span>Hit</span></button>
+        <button class="act stand" id="btn-stand" title="Stand (S)"><i>✋</i><span>Stand</span></button>
+        <button class="act double" id="btn-double" title="Double (D)"><i>×2</i><span>Double</span></button>
+        <button class="act split" id="btn-split" title="Split (P)"><i>⇆</i><span>Split</span></button>
+      </div>
+    </section>
+
+    <p class="fineprint">Play money only, shared with Starfall Spins. No real money, nothing to win but bragging rights. <span class="keys">Space deal · H hit · S stand · D double · P split · 1–5 chips</span></p>
+  </main>
+
+  <canvas id="fx" aria-hidden="true"></canvas>
+
+  <div class="banner" id="banner" aria-hidden="true"><div class="banner-title" id="banner-title"></div><div class="banner-sub" id="banner-sub"></div></div>
+
+  <div class="overlay broke" id="broke" hidden>
+    <div class="card">
+      <h2>Out of stardust</h2>
+      <p>Your balance is too low for the smallest chip. Here's a fresh stack on the house. It's all play money anyway.</p>
+      <button id="btn-refill" class="cta">Refill 10,000</button>
+    </div>
+  </div>
+
+  <dialog id="rules">
+    <form method="dialog" class="card">
+      <h2>How to play</h2>
+      <p class="pt-note">Get closer to 21 than the dealer without going over. Number cards count their number, J Q K count 10, and an ace counts 11 or 1, whichever helps.</p>
+      <ul class="rules-list">
+        <li><b>Blackjack</b> (ace plus a ten-value card as your first two) pays <b>3 to 2</b>.</li>
+        <li>A regular win pays <b>1 to 1</b>. A tie is a <b>push</b> and your bet comes back.</li>
+        <li><b>Hit</b> takes a card, <b>Stand</b> keeps your total.</li>
+        <li><b>Double</b> doubles your bet on your first two cards and gives you exactly one more card.</li>
+        <li><b>Split</b> a pair into two hands, each with its own bet, up to 4 hands. Split aces get one card each. Doubling after a split is allowed.</li>
+        <li>The dealer checks for blackjack when showing an ace or a ten, draws to 16 and <b>stands on all 17s</b>.</li>
+        <li>Six decks, reshuffled when the cut card comes out. No insurance.</li>
+      </ul>
+      <p class="pt-note">With perfect play the return is about 99.4%. Every hand is random.</p>
+      <button class="cta" value="close">Got it</button>
+    </form>
+  </dialog>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
