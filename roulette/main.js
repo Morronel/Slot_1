@@ -497,6 +497,7 @@ async function spin() {
   setMsg('No more bets');
 
   zoomIn();
+  document.body.classList.add('spinning');
   stars.warpTarget = 0.35;
   sound.launch();
   sound.startRoll();
@@ -508,6 +509,7 @@ async function spin() {
   const bp = wheel.ballClientPos();
   particles.sparks(bp.x, bp.y, 30, '#fff3b0', 260);
   stars.warpTarget = 0;
+  setTimeout(() => document.body.classList.remove('spinning'), state.turbo ? 600 : 1100);
   await present(res, bets);
 }
 

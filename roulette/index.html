@@ -17,6 +17,8 @@
   <div class="nebula" aria-hidden="true"></div>
 
   <main id="app">
+    <!-- Inside #app so it shares the wheel's stacking context and sits behind the zoomed wheel, not over it. -->
+    <div class="wheel-backdrop" id="wheel-backdrop" aria-hidden="true"></div>
     <header class="top">
       <h1 class="logo" aria-label="Nova Roulette"><span>NOVA</span><em>ROULETTE</em></h1>
       <div class="top-buttons">
@@ -81,7 +83,6 @@
     <p class="fineprint">Play money only, one balance across every game. <span class="keys">Space spin · Z undo · C clear · D double · R rebet · 1–6 chips</span></p>
   </main>
 
-  <div class="wheel-backdrop" id="wheel-backdrop" aria-hidden="true"></div>
   <canvas id="fx" aria-hidden="true"></canvas>
   <div class="flyers" id="flyers" aria-hidden="true"></div>
 
