@@ -13,9 +13,12 @@
   window.addEventListener('pageshow', function (e) { if (e.persisted) location.reload(); });
 
   var GAMES = [
-    { path: '', name: 'Starfall Spins', kind: 'Slots', art: 'slots' },
-    { path: 'roulette/', name: 'Nova Roulette', kind: 'Roulette', art: 'roulette' },
-    { path: 'blackjack/', name: 'Blackjack', kind: 'Cards', art: 'cards' },
+    { id: 'slots', path: 'slots/', name: 'Starfall Spins', kind: 'Slots', art: 'slots',
+      blurb: '5 reels, 20 paylines, free spins with every win doubled.', tags: ['97% RTP', 'Free spins', 'Turbo'] },
+    { id: 'roulette', path: 'roulette/', name: 'Nova Roulette', kind: 'Roulette', art: 'roulette',
+      blurb: 'European single-zero wheel with real ball physics.', tags: ['Straight up 35:1', 'Rebet', 'History'] },
+    { id: 'blackjack', path: 'blackjack/', name: 'Starfall 21', kind: 'Blackjack', art: 'cards',
+      blurb: 'Six-deck shoe, blackjack pays 3 to 2, split and double.', tags: ['3 to 2', 'Split ×4', '99.4% RTP'] },
   ];
 
   var ART = {
@@ -46,18 +49,33 @@
     '.games-nav-item[aria-current=page]{border-color:#ff4dd8;box-shadow:0 0 18px rgba(255,77,216,.45);background:rgba(255,77,216,.12)}',
     '.games-nav-item[aria-current=page] small::after{content:" \\00b7  playing now";color:#ff9af0}',
     '.games-nav-note{margin:12px 0 0;font-size:11.5px;color:rgba(185,166,230,.75);text-align:center}',
+    '.games-nav-note a{color:#ffd84a;margin-left:4px}',
   ].join('');
+
+  var LAST = 'starfall-last-game';
 
   function balance() {
     try { var b = JSON.parse(localStorage.getItem(KEY) || '{}').balance; return Number.isFinite(b) ? b : 10000; } catch (e) { return 10000; }
   }
 
+  // The home page builds its own big lobby from the same list.
+  window.StarfallGames = {
+    games: GAMES.map(function (g) { return Object.assign({}, g, { href: new URL(g.path, base).href, art: ART[g.art] }); }),
+    balance: balance,
+    last: function () { try { return localStorage.getItem(LAST); } catch (e) { return null; } },
+  };
+
   function init() {
+    var here = location.pathname.replace(/index\.html$/, '');
+    GAMES.forEach(function (g) {
+      if (new URL(g.path, base).pathname === here) { try { localStorage.setItem(LAST, g.id); } catch (e) {} }
+    });
+    if (document.querySelector('[data-games-lobby]')) return;
+
     var style = document.createElement('style');
     style.textContent = css;
     document.head.appendChild(style);
 
-    var here = location.pathname.replace(/index\.html$/, '');
     var btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'games-nav-btn';
@@ -83,7 +101,7 @@
     }).join('');
     sheet.innerHTML = '<div class="games-nav-card"><div class="games-nav-head"><h2>Games</h2><div class="games-nav-bal">Balance<b></b></div></div>' +
       '<nav class="games-nav-list" aria-label="Games">' + items + '</nav>' +
-      '<p class="games-nav-note">One play-money balance across every game.</p></div>';
+      '<p class="games-nav-note">One play-money balance across every game. <a href="' + base.href + '">Lobby</a></p></div>';
     document.body.appendChild(sheet);
     var card = sheet.firstChild;
 

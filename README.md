@@ -1,10 +1,15 @@
-# Starfall Spins
+# Starfall Casino
 
-A play-money slot machine that runs entirely in the browser. No backend, no build step, no real money.
+Play-money slots, roulette and blackjack that run entirely in the browser. No backend, no build step, no real money.
 
-**Play:** https://morronel.github.io/slot_1/ (once GitHub Pages is on, see below)
+**Play:** https://morronel.github.io/slot_1/
 
-## What's in it
+The home page is a game picker: a card for each game, the shared balance, and a "Last played" badge. It is built from the game list in `js/nav.js`, so adding a game there adds it to both the home page and the in-game switcher.
+
+## Starfall Spins (slots)
+
+**Play:** https://morronel.github.io/slot_1/slots/
+
 
 - 5 reels, 3 rows, 20 paylines, with an original cosmic theme: hand-built SVG gems, moon, ringed planet, comet, gold star, a Wild Sun and a Nebula bonus symbol.
 - Reels with wind-up, vertical motion blur, staggered stops and an overshoot bounce. Press Spin again to slam-stop.
@@ -68,8 +73,9 @@ python3 -m http.server 8000
 
 ## Files
 
-- `index.html` markup and overlays
-- `css/style.css` all styling and animations
+- `index.html`, `css/lobby.css`, `js/lobby.js` home page game picker
+- `slots/index.html` slot machine markup and overlays
+- `css/style.css` slot styling and the shared theme
 - `js/engine.js` reel strips, paylines, win evaluation (pure logic, runs in Node too)
 - `js/symbols.js` SVG symbol art
 - `js/audio.js` Web Audio sound synthesis
